@@ -1,12 +1,12 @@
 #!/bin/sh
 
-GO_VERSION=1.11
-NODE_VERSION=10.6.0
+GO_VERSION=1.11.2
+NODE_VERSION=11.1.0
 KUBECTL_VERSION=v1.10.3
 RANCHER_CLI_VERSION=v2.0.2
 HELM_VERSION=v2.9.1
 
-docker build -t plimble/ci:vsts \
+docker build -t onedaycat/ci:vsts \
   --build-arg GO_VERSION=$GO_VERSION \
   --build-arg NODE_VERSION=$NODE_VERSION \
   --build-arg KUBECTL_VERSION=$KUBECTL_VERSION \
@@ -15,4 +15,4 @@ docker build -t plimble/ci:vsts \
   -f vsts/Dockerfile \
   .
 
-docker push plimble/ci:vsts
+docker push onedaycat/ci:vsts
