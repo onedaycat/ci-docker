@@ -1,11 +1,11 @@
-FROM plimble/ci:node
+FROM onedaycat/ci:node
 
 # set up nsswitch.conf for Go's "netgo" implementation
 # - https://github.com/golang/go/blob/go1.9.1/src/net/conf.go#L194-L275
 # - docker run --rm debian:stretch grep '^hosts:' /etc/nsswitch.conf
 RUN [ ! -e /etc/nsswitch.conf ] && echo 'hosts: files dns' > /etc/nsswitch.conf
 
-ARG GOLANG_VERSION=1.11
+ARG GOLANG_VERSION=1.11.2
 
 # make-sure-R0-is-zero-before-main-on-ppc64le.patch: https://github.com/golang/go/commit/9aea0e89b6df032c29d0add8d69ba2c95f1106d9 (Go 1.9)
 #COPY *.patch /go-alpine-patches/

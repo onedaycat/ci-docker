@@ -1,10 +1,10 @@
 FROM microsoft/vsts-agent:ubuntu-16.04-docker-17.06.0-ce
 
-ARG GO_VERSION=1.11
+ARG GO_VERSION=1.11.2
 ARG KUBECTL_VERSION=v1.10.3
 ARG RANCHER_CLI_VERSION=v2.0.4
 ARG HELM_VERSION=v2.9.1
-ARG NODE_VERSION=10.6.0
+ARG NODE_VERSION=11.1.0
 
 # Install basic command-line utilities
 RUN apt-get update \

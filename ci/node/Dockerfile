@@ -1,4 +1,4 @@
-FROM mhart/alpine-node:10
+FROM mhart/alpine-node:11.1.0
 
 RUN apk add --no-cache tar gzip libc6-compat curl git openssh-client bash g++ ca-certificates python-dev
 
