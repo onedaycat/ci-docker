@@ -29,6 +29,7 @@ RUN set -x && \
   mv kubectl /usr/local/bin/ && \
   chmod +x /usr/local/bin/kubectl && \
   npm install -g serverless && \
+  npm install -g @onedaycat/gqlimport && \
   curl -O https://bootstrap.pypa.io/get-pip.py && \
   python get-pip.py && \
   pip --version && \

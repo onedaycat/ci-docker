@@ -31,6 +31,10 @@ RUN set -x && \
   mv kubectl /usr/local/bin/ && \
   chmod +x /usr/local/bin/kubectl && \
   go get -u github.com/jteeuwen/go-bindata/... && \
+  go get -u github.com/onedaycat/zamus/zamus && \
+  go get -u github.com/onedaycat/vtlgen/vtlgen && \
+  go get -u github.com/onedaycat/gqlscalars/gqlscalars && \
+  go get -u go get -u github.com/plimble/mage/... && \
   curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh && \
   mkdir -p ~/.ssh && \
   chmod 700 ~/.ssh && \
