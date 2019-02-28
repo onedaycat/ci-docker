@@ -36,8 +36,4 @@ RUN set -x && \
   pip install awscli && \
   aws --version
 
-COPY docker-entrypoint.sh /usr/local/bin/
-
 WORKDIR /root
-ENTRYPOINT ["docker-entrypoint.sh"]
-CMD ["bash"]

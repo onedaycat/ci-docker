@@ -1,4 +1,4 @@
-FROM golang:1.11-alpine
+FROM golang:1.12-alpine
 
 RUN apk add --no-cache tar gzip curl git openssh-client bash g++ ca-certificates
 
@@ -35,6 +35,7 @@ RUN set -x && \
   go get -u github.com/onedaycat/vtlgen/vtlgen && \
   go get -u github.com/onedaycat/gqlscalars/gqlscalars && \
   go get -u github.com/plimble/mage/... && \
+  $GOPATH/src/github.com/plimble/mage/install && \
   curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh && \
   mkdir -p ~/.ssh && \
   chmod 700 ~/.ssh && \
@@ -42,8 +43,3 @@ RUN set -x && \
   ssh-keyscan github.com >> ~/.ssh/known_hosts && \
   ssh-keyscan bitbucket.org >> ~/.ssh/known_hosts && \
   chmod 644 ~/.ssh/known_hosts
-
-COPY docker-entrypoint.sh /usr/local/bin/
-
-ENTRYPOINT ["docker-entrypoint.sh"]
-CMD ["bash"]
