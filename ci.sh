@@ -6,7 +6,7 @@ RANCHER_CLI_VERSION=v2.0.4
 HELM_VERSION=v2.9.1
 GOLANG_VERSION=1.11.5
 
-docker build -t plimble/ci:go \
+docker build -t onedaycat/ci:go \
   --build-arg DOCKER_VERSION=$DOCKER_VERSION \
   --build-arg KUBECTL_VERSION=$KUBECTL_VERSION \
   --build-arg RANCHER_CLI_VERSION=$RANCHER_CLI_VERSION \
@@ -14,7 +14,7 @@ docker build -t plimble/ci:go \
   -f ci/go/Dockerfile \
   .
 
-docker build -t plimble/ci:node \
+docker build -t onedaycat/ci:node \
   --build-arg DOCKER_VERSION=$DOCKER_VERSION \
   --build-arg KUBECTL_VERSION=$KUBECTL_VERSION \
   --build-arg RANCHER_CLI_VERSION=$RANCHER_CLI_VERSION \
@@ -22,7 +22,7 @@ docker build -t plimble/ci:node \
   -f ci/node/Dockerfile \
   .
 
-docker build -t plimble/ci \
+docker build -t onedaycat/ci \
   --build-arg GOLANG_VERSION=$GOLANG_VERSION \
   -f ci/Dockerfile \
   .

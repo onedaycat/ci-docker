@@ -1,5 +1,5 @@
 #!/bin/sh
 
-docker push plimble/ci:go
-docker push plimble/ci:node
-docker push plimble/ci
+docker push onedaycat/ci:go
+docker push onedaycat/ci:node
+docker push onedaycat/ci
