@@ -1,14 +1,16 @@
-FROM onedaycat/ci:node
+FROM node:11-alpine
 
-# set up nsswitch.conf for Go's "netgo" implementation
-# - https://github.com/golang/go/blob/go1.9.1/src/net/conf.go#L194-L275
-# - docker run --rm debian:stretch grep '^hosts:' /etc/nsswitch.conf
-RUN [ ! -e /etc/nsswitch.conf ] && echo 'hosts: files dns' > /etc/nsswitch.conf
-
+ARG KUBECTL_VERSION=v1.10.3
+ARG HELM_VERSION=v2.9.1
 ARG GOLANG_VERSION=1.12
 
-# make-sure-R0-is-zero-before-main-on-ppc64le.patch: https://github.com/golang/go/commit/9aea0e89b6df032c29d0add8d69ba2c95f1106d9 (Go 1.9)
-#COPY *.patch /go-alpine-patches/
+RUN apk update && \
+	apk upgrade && \
+	apk add --update --no-cache gcc tar gzip libc6-compat curl git openssh-client bash g++ ca-certificates python-dev
+
+RUN [ ! -e /etc/nsswitch.conf ] && echo 'hosts: files dns' > /etc/nsswitch.conf
+
+ENV GOLANG_VERSION ${GOLANG_VERSION}
 
 RUN set -eux; \
 	apk add --no-cache --virtual .build-deps \
@@ -37,17 +39,20 @@ RUN set -eux; \
 	esac; \
 	\
 	wget -O go.tgz "https://golang.org/dl/go$GOLANG_VERSION.src.tar.gz"; \
+	echo '09c43d3336743866f2985f566db0520b36f4992aea2b4b2fd9f52f17049e88f2 *go.tgz' | sha256sum -c -; \
 	tar -C /usr/local -xzf go.tgz; \
 	rm go.tgz; \
 	\
 	cd /usr/local/go/src; \
-	for p in /go-alpine-patches/*.patch; do \
-	[ -f "$p" ] || continue; \
-	patch -p2 -i "$p"; \
-	done; \
 	./make.bash; \
 	\
-	rm -rf /go-alpine-patches; \
+	rm -rf \
+	# https://github.com/golang/go/blob/0b30cf534a03618162d3015c8705dd2231e34703/src/cmd/dist/buildtool.go#L121-L125
+	/usr/local/go/pkg/bootstrap \
+	# https://golang.org/cl/82095
+	# https://github.com/golang/build/blob/e3fe1605c30f6a3fd136b561569933312ede8782/cmd/release/releaselet.go#L56
+	/usr/local/go/pkg/obj \
+	; \
 	apk del .build-deps; \
 	\
 	export PATH="/usr/local/go/bin:$PATH"; \
@@ -55,9 +60,30 @@ RUN set -eux; \
 
 ENV GOPATH /go
 ENV PATH $GOPATH/bin:/usr/local/go/bin:$PATH
-ENV GO111MODULE=auto
 
 RUN mkdir -p "$GOPATH/src" "$GOPATH/bin" && chmod -R 777 "$GOPATH"
+WORKDIR $GOPATH
+
+RUN set -x && \
+	node -v && \
+	go version && \
+	go env && \
+	mkdir -p "$GOPATH/src" "$GOPATH/bin" && chmod -R 777 "$GOPATH" && \
+	curl -fSL "https://storage.googleapis.com/kubernetes-helm/helm-${HELM_VERSION}-linux-amd64.tar.gz" -o helm.tar.gz && \
+	tar -xzvf helm.tar.gz && \
+	mv linux-amd64/helm /usr/local/bin/helm && \
+	rm -rf linux-amd64 helm.tar.gz && \
+	helm version -c && \
+	curl -LO https://storage.googleapis.com/kubernetes-release/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl && \
+	mv kubectl /usr/local/bin/ && \
+	chmod +x /usr/local/bin/kubectl && \
+	npm install -g serverless && \
+	npm install -g @onedaycat/gqlimport && \
+	curl -O https://bootstrap.pypa.io/get-pip.py && \
+	python get-pip.py && \
+	pip --version && \
+	pip install awscli && \
+	aws --version
 
 RUN go get -u github.com/jteeuwen/go-bindata/... && \
 	go get -u github.com/onedaycat/zamus/zamus && \
