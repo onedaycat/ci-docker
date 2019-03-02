@@ -1,59 +1,56 @@
-FROM node:11-alpine
+FROM node:11
 
 ARG KUBECTL_VERSION=v1.10.3
 ARG HELM_VERSION=v2.9.1
 ARG GOLANG_VERSION=1.12
 
-RUN apk update && \
-	apk upgrade && \
-	apk add --update --no-cache gcc tar gzip libc6-compat curl git openssh-client bash g++ ca-certificates python-dev
+RUN apt-get update && apt-get install -y --no-install-recommends \
+	curl \
+	openssh-client \
+	gzip \
+	tar \
+	python-dev \
+	git
 
-RUN [ ! -e /etc/nsswitch.conf ] && echo 'hosts: files dns' > /etc/nsswitch.conf
+# gcc for cgo
+RUN apt-get update && apt-get install -y --no-install-recommends \
+	g++ \
+	gcc \
+	libc6-dev \
+	make \
+	pkg-config \
+	&& rm -rf /var/lib/apt/lists/*
 
 ENV GOLANG_VERSION ${GOLANG_VERSION}
 
 RUN set -eux; \
-	apk add --no-cache --virtual .build-deps \
-	bash \
-	gcc \
-	musl-dev \
-	openssl \
-	go \
-	; \
-	export \
-	# set GOROOT_BOOTSTRAP such that we can actually build Go
-	GOROOT_BOOTSTRAP="$(go env GOROOT)" \
-	# ... and set "cross-building" related vars to the installed system's values so that we create a build targeting the proper arch
-	# (for example, if our build host is GOARCH=amd64, but our build env/image is GOARCH=386, our build needs GOARCH=386)
-	GOOS="$(go env GOOS)" \
-	GOARCH="$(go env GOARCH)" \
-	GOHOSTOS="$(go env GOHOSTOS)" \
-	GOHOSTARCH="$(go env GOHOSTARCH)" \
-	; \
-	# also explicitly set GO386 and GOARM if appropriate
-	# https://github.com/docker-library/golang/issues/184
-	apkArch="$(apk --print-arch)"; \
-	case "$apkArch" in \
-	armhf) export GOARM='6' ;; \
-	x86) export GO386='387' ;; \
+	\
+	# this "case" statement is generated via "update.sh"
+	dpkgArch="$(dpkg --print-architecture)"; \
+	case "${dpkgArch##*-}" in \
+	amd64) goRelArch='linux-amd64'; goRelSha256='750a07fef8579ae4839458701f4df690e0b20b8bcce33b437e4df89c451b6f13' ;; \
+	armhf) goRelArch='linux-armv6l'; goRelSha256='ea0636f055763d309437461b5817452419411eb1f598dc7f35999fae05bcb79a' ;; \
+	arm64) goRelArch='linux-arm64'; goRelSha256='b7bf59c2f1ac48eb587817a2a30b02168ecc99635fc19b6e677cce01406e3fac' ;; \
+	i386) goRelArch='linux-386'; goRelSha256='3ac1db65a6fa5c13f424b53ee181755429df0c33775733cede1e0d540440fd7b' ;; \
+	ppc64el) goRelArch='linux-ppc64le'; goRelSha256='5be21e7035efa4a270802ea04fb104dc7a54e3492641ae44632170b93166fb68' ;; \
+	s390x) goRelArch='linux-s390x'; goRelSha256='c0aef360b99ebb4b834db8b5b22777b73a11fa37b382121b24bf587c40603915' ;; \
+	*) goRelArch='src'; goRelSha256='09c43d3336743866f2985f566db0520b36f4992aea2b4b2fd9f52f17049e88f2'; \
+	echo >&2; echo >&2 "warning: current architecture ($dpkgArch) does not have a corresponding Go binary release; will be building from source"; echo >&2 ;; \
 	esac; \
 	\
-	wget -O go.tgz "https://golang.org/dl/go$GOLANG_VERSION.src.tar.gz"; \
-	echo '09c43d3336743866f2985f566db0520b36f4992aea2b4b2fd9f52f17049e88f2 *go.tgz' | sha256sum -c -; \
+	url="https://golang.org/dl/go${GOLANG_VERSION}.${goRelArch}.tar.gz"; \
+	wget -O go.tgz "$url"; \
+	echo "${goRelSha256} *go.tgz" | sha256sum -c -; \
 	tar -C /usr/local -xzf go.tgz; \
 	rm go.tgz; \
 	\
-	cd /usr/local/go/src; \
-	./make.bash; \
-	\
-	rm -rf \
-	# https://github.com/golang/go/blob/0b30cf534a03618162d3015c8705dd2231e34703/src/cmd/dist/buildtool.go#L121-L125
-	/usr/local/go/pkg/bootstrap \
-	# https://golang.org/cl/82095
-	# https://github.com/golang/build/blob/e3fe1605c30f6a3fd136b561569933312ede8782/cmd/release/releaselet.go#L56
-	/usr/local/go/pkg/obj \
-	; \
-	apk del .build-deps; \
+	if [ "$goRelArch" = 'src' ]; then \
+	echo >&2; \
+	echo >&2 'error: UNIMPLEMENTED'; \
+	echo >&2 'TODO install golang-any from jessie-backports for GOROOT_BOOTSTRAP (and uninstall after build)'; \
+	echo >&2; \
+	exit 1; \
+	fi; \
 	\
 	export PATH="/usr/local/go/bin:$PATH"; \
 	go version
