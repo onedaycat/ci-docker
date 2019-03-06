@@ -80,7 +80,15 @@ RUN set -x && \
 	python get-pip.py && \
 	pip --version && \
 	pip install awscli && \
-	aws --version
+	aws --version && \
+	mkdir -p ~/.ssh && \
+	chmod 700 ~/.ssh && \
+	ssh-keyscan gitlab.com >> ~/.ssh/known_hosts && \
+	ssh-keyscan github.com >> ~/.ssh/known_hosts && \
+	ssh-keyscan bitbucket.org >> ~/.ssh/known_hosts && \
+	chmod 644 ~/.ssh/known_hosts
+
+ENV LIB=v1
 
 RUN go get -u github.com/jteeuwen/go-bindata/... && \
 	go get -u github.com/onedaycat/zamus/zamus && \
@@ -89,12 +97,6 @@ RUN go get -u github.com/jteeuwen/go-bindata/... && \
 	go get -u github.com/plimble/mage/... && \
 	$GOPATH/src/github.com/plimble/mage/install && \
 	curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh && \
-	mkdir -p ~/.ssh && \
-	chmod 700 ~/.ssh && \
-	ssh-keyscan gitlab.com >> ~/.ssh/known_hosts && \
-	ssh-keyscan github.com >> ~/.ssh/known_hosts && \
-	ssh-keyscan bitbucket.org >> ~/.ssh/known_hosts && \
-	chmod 644 ~/.ssh/known_hosts && \
 	npm install -g serverless
 
 WORKDIR $GOPATH
