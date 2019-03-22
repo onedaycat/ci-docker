@@ -86,7 +86,7 @@ RUN set -x && \
 	ssh-keyscan bitbucket.org >> ~/.ssh/known_hosts && \
 	chmod 644 ~/.ssh/known_hosts
 
-ENV TOOL=v1
+ENV TOOL=v2
 
 RUN go get -u github.com/jteeuwen/go-bindata/... && \
 	go get -u github.com/onedaycat/zamus/zamus && \
