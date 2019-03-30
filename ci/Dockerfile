@@ -99,6 +99,10 @@ RUN go get -u github.com/jteeuwen/go-bindata/... && \
 	pip install awscli && \
 	aws --version && \
 	npm install -g @onedaycat/gqlimport && \
-	npm install -g serverless
+	npm install -g serverless && \
+	sls version && \
+	npm install -g firebase-tools && \
+	firebase --version
+
 
 WORKDIR $GOPATH
