@@ -2,7 +2,8 @@ FROM node:11
 
 ARG KUBECTL_VERSION=v1.10.3
 ARG HELM_VERSION=v2.9.1
-ARG GOLANG_VERSION=1.12.4
+ARG GOLANG_VERSION=1.12.5
+ARG TERRAFORM_VERSION=0.11.13
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
 	curl \
@@ -21,20 +22,20 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 	pkg-config \
 	&& rm -rf /var/lib/apt/lists/*
 
-ENV GOLANG_VERSION ${GOLANG_VERSION}
+ENV GOLANG_VERSION 1.12.5
 
 RUN set -eux; \
 	\
 	# this "case" statement is generated via "update.sh"
 	dpkgArch="$(dpkg --print-architecture)"; \
 	case "${dpkgArch##*-}" in \
-	amd64) goRelArch='linux-amd64'; goRelSha256='d7d1f1f88ddfe55840712dc1747f37a790cbcaa448f6c9cf51bbe10aa65442f5' ;; \
-	armhf) goRelArch='linux-armv6l'; goRelSha256='c43457b6d89016e9b79b92823003fd7858fb02aea22b335cfd204e0b5be71d92' ;; \
-	arm64) goRelArch='linux-arm64'; goRelSha256='b7d7b4319b2d86a2ed20cef3b47aa23f0c97612b469178deecd021610f6917df' ;; \
-	i386) goRelArch='linux-386'; goRelSha256='eba5c51f657c1b05d5930475d1723758cd86db74499125ab48f0f9d1863845f7' ;; \
-	ppc64el) goRelArch='linux-ppc64le'; goRelSha256='51642f3cd6ef9af6c4a092c2929e4fb478f102fe949921bd77ecd6905952c216' ;; \
-	s390x) goRelArch='linux-s390x'; goRelSha256='0aab0f368c090da71f52531ebac977cc7396b692145acee557b3f9500b42467a' ;; \
-	*) goRelArch='src'; goRelSha256='4affc3e610cd8182c47abbc5b0c0e4e3c6a2b945b55aaa2ba952964ad9df1467'; \
+	amd64) goRelArch='linux-amd64'; goRelSha256='aea86e3c73495f205929cfebba0d63f1382c8ac59be081b6351681415f4063cf' ;; \
+	armhf) goRelArch='linux-armv6l'; goRelSha256='311f5e76c7cec1ec752474a61d837e474b8e750b8e3eed267911ab57c0e5da9a' ;; \
+	arm64) goRelArch='linux-arm64'; goRelSha256='ff09f34935cd189a4912f3f308ec83e4683c309304144eae9cf60ebc552e7cd8' ;; \
+	i386) goRelArch='linux-386'; goRelSha256='146605e13bf337ff3aacd941a816c5d97a8fef8b5817e07fcec4540632085980' ;; \
+	ppc64el) goRelArch='linux-ppc64le'; goRelSha256='e88b2a2098bc79ad33912d1d27bc3282a7f3231b6f4672f306465bf46ff784ca' ;; \
+	s390x) goRelArch='linux-s390x'; goRelSha256='168d297ec910cb446d1aea878baeb85f1387209f9eb55dde68bddcd4c006dcbb' ;; \
+	*) goRelArch='src'; goRelSha256='2aa5f088cbb332e73fc3def546800616b38d3bfe6b8713b8a6404060f22503e8'; \
 	echo >&2; echo >&2 "warning: current architecture ($dpkgArch) does not have a corresponding Go binary release; will be building from source"; echo >&2 ;; \
 	esac; \
 	\
@@ -86,7 +87,7 @@ RUN set -x && \
 	ssh-keyscan bitbucket.org >> ~/.ssh/known_hosts && \
 	chmod 644 ~/.ssh/known_hosts
 
-ENV TOOL=v1
+ENV TOOL=v2
 
 RUN go get -u github.com/jteeuwen/go-bindata/... && \
 	go get -u github.com/onedaycat/zamus/zamus && \
@@ -102,7 +103,13 @@ RUN go get -u github.com/jteeuwen/go-bindata/... && \
 	npm install -g serverless && \
 	sls version && \
 	npm install -g firebase-tools && \
-	firebase --version
+	firebase --version && \
+	curl -LO https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip && \
+	unzip terraform_${TERRAFORM_VERSION}_linux_amd64.zip -d /usr/local/bin/ && \
+	terraform -v && \
+	git config --global url."git@github.com:".insteadOf "https://github.com/" && \
+	git config --global url."git@gitlab.com:".insteadOf "https://gitlab.com/" && \
+	git config --global url."git@bitbucket.org:".insteadOf "https://bitbucket.org/"
 
 
 WORKDIR $GOPATH
