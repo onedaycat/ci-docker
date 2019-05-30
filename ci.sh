@@ -9,7 +9,7 @@ docker build -t onedaycat/ci \
   --build-arg KUBECTL_VERSION=$KUBECTL_VERSION \
   --build-arg HELM_VERSION=$HELM_VERSION \
   --build-arg GOLANG_VERSION=$GOLANG_VERSION \
-  -f ci/Dockerfile \
+  -f Dockerfile \
   .
 
 
