@@ -90,8 +90,6 @@ RUN set -x && \
 ENV TOOL=v2
 
 RUN go get -u github.com/jteeuwen/go-bindata/... && \
-	go get -u github.com/onedaycat/zamus/zamus && \
-	zamus --version && \
 	go get -u github.com/onedaycat/vtlgen/vtlgen && \
 	go get -u github.com/onedaycat/gqlscalars/gqlscalars && \
 	go get -u github.com/plimble/mage/... && \
