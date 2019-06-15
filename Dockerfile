@@ -3,7 +3,7 @@ FROM node:11
 ARG KUBECTL_VERSION=v1.10.3
 ARG HELM_VERSION=v2.9.1
 ARG GOLANG_VERSION=1.12.5
-ARG TERRAFORM_VERSION=0.12.1
+ARG TERRAFORM_VERSION=0.12.2
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
 	curl \
