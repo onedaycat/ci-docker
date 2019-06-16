@@ -2,8 +2,7 @@ FROM node:11
 
 ARG KUBECTL_VERSION=v1.10.3
 ARG HELM_VERSION=v2.9.1
-ARG GOLANG_VERSION=1.12.5
-ARG TERRAFORM_VERSION=0.12.2
+ARG GOLANG_VERSION=1.12.6
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
 	curl \
@@ -13,7 +12,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 	python-dev \
 	git
 
-# gcc for cgo
 RUN apt-get update && apt-get install -y --no-install-recommends \
 	g++ \
 	gcc \
@@ -22,20 +20,20 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 	pkg-config \
 	&& rm -rf /var/lib/apt/lists/*
 
-ENV GOLANG_VERSION 1.12.5
+ENV GOLANG_VERSION 1.12.6
 
 RUN set -eux; \
 	\
 	# this "case" statement is generated via "update.sh"
 	dpkgArch="$(dpkg --print-architecture)"; \
 	case "${dpkgArch##*-}" in \
-	amd64) goRelArch='linux-amd64'; goRelSha256='aea86e3c73495f205929cfebba0d63f1382c8ac59be081b6351681415f4063cf' ;; \
-	armhf) goRelArch='linux-armv6l'; goRelSha256='311f5e76c7cec1ec752474a61d837e474b8e750b8e3eed267911ab57c0e5da9a' ;; \
-	arm64) goRelArch='linux-arm64'; goRelSha256='ff09f34935cd189a4912f3f308ec83e4683c309304144eae9cf60ebc552e7cd8' ;; \
-	i386) goRelArch='linux-386'; goRelSha256='146605e13bf337ff3aacd941a816c5d97a8fef8b5817e07fcec4540632085980' ;; \
-	ppc64el) goRelArch='linux-ppc64le'; goRelSha256='e88b2a2098bc79ad33912d1d27bc3282a7f3231b6f4672f306465bf46ff784ca' ;; \
-	s390x) goRelArch='linux-s390x'; goRelSha256='168d297ec910cb446d1aea878baeb85f1387209f9eb55dde68bddcd4c006dcbb' ;; \
-	*) goRelArch='src'; goRelSha256='2aa5f088cbb332e73fc3def546800616b38d3bfe6b8713b8a6404060f22503e8'; \
+	amd64) goRelArch='linux-amd64'; goRelSha256='dbcf71a3c1ea53b8d54ef1b48c85a39a6c9a935d01fc8291ff2b92028e59913c' ;; \
+	armhf) goRelArch='linux-armv6l'; goRelSha256='0708fbc125e7b782b44d450f3a3864859419b3691121ad401f1b9f00e488bddb' ;; \
+	arm64) goRelArch='linux-arm64'; goRelSha256='8f4e3909c74b4f3f3956715f32419b28d32a4ad57dbd79f74b7a8a920b21a1a3' ;; \
+	i386) goRelArch='linux-386'; goRelSha256='7aaf25164a9ab5e1005c15535ed16ee122df50ac192c2d79b7940315c2b74f2c' ;; \
+	ppc64el) goRelArch='linux-ppc64le'; goRelSha256='67eacb68c1e251c1428e588776c5a02e287a508e3d44f940d31d8ff5d57f0eef' ;; \
+	s390x) goRelArch='linux-s390x'; goRelSha256='c14baa10b87a38e56f28a176fae8a839e9052b0e691bdc0461677d4bcedea9aa' ;; \
+	*) goRelArch='src'; goRelSha256='c96c5ccc7455638ae1a8b7498a030fe653731c8391c5f8e79590bce72f92b4ca'; \
 	echo >&2; echo >&2 "warning: current architecture ($dpkgArch) does not have a corresponding Go binary release; will be building from source"; echo >&2 ;; \
 	esac; \
 	\
@@ -88,6 +86,7 @@ RUN set -x && \
 	chmod 644 ~/.ssh/known_hosts
 
 ENV TOOL=v2
+ENV TERRAFORM_VERSION=0.12.2
 
 RUN go get -u github.com/jteeuwen/go-bindata/... && \
 	go get -u github.com/onedaycat/vtlgen/vtlgen && \
