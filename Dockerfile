@@ -86,10 +86,9 @@ RUN set -x && \
 	chmod 644 ~/.ssh/known_hosts
 
 ENV TOOL=v2
-ENV TERRAFORM_VERSION=0.12.2
+ENV TERRAFORM_VERSION=0.12.3
 
 RUN go get -u github.com/jteeuwen/go-bindata/... && \
-	go get -u github.com/onedaycat/vtlgen/vtlgen && \
 	go get -u github.com/onedaycat/gqlscalars/gqlscalars && \
 	go get -u github.com/plimble/mage/... && \
 	$GOPATH/src/github.com/plimble/mage/install && \
