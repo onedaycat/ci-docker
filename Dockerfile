@@ -107,5 +107,6 @@ RUN go get -u github.com/jteeuwen/go-bindata/... && \
 	git config --global url."git@gitlab.com:".insteadOf "https://gitlab.com/" && \
 	git config --global url."git@bitbucket.org:".insteadOf "https://bitbucket.org/"
 
+COPY .terraformrc ~/.terraformrc
 
 WORKDIR $GOPATH
