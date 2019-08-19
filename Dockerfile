@@ -2,6 +2,7 @@ FROM golang:1.12.9-alpine
 
 ENV LAST_UPDATE=2019-08-19-1
 ENV TERRAFORM_VERSION=0.12.6
+ENV CGO_ENABLED=0
 
 RUN apk update && apk add --no-cache \
   curl \
