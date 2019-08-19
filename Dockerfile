@@ -86,7 +86,7 @@ RUN set -x && \
 	chmod 644 ~/.ssh/known_hosts
 
 ENV TOOL=v2
-ENV TERRAFORM_VERSION=0.12.5
+ENV TERRAFORM_VERSION=0.12.6
 
 RUN go get -u github.com/jteeuwen/go-bindata/... && \
 	go get -u github.com/onedaycat/gqlscalars/gqlscalars && \
