@@ -11,8 +11,7 @@ RUN apk update && apk add --no-cache \
   git \
   nodejs \
   npm \
-  yarn \
-  docker
+  yarn
 
 RUN set -x && \
   ln -sf /usr/share/zoneinfo/Etc/UTC /etc/localtime && \
