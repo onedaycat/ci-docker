@@ -10,14 +10,13 @@
 
 ## Tools
 
-- go `1.12.9`
+- go `1.13.0`
   - go-bindata
   - mage
-- node `10.16.2`
-  - yarn
+- node `10.16.3`
+  - yarn `1.17.3`
 - python `2.7`
-- docker `19.03.1-r2`
-- terraform `0.12.6`
+- terraform `0.12.7`
 - aws-cli
 - firebase-cli
 - git
