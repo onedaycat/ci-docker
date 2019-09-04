@@ -1,4 +1,4 @@
-FROM golang:1.12.9-alpine
+FROM golang:1.13.0-alpine
 
 ENV LAST_UPDATE=2019-08-19-1
 ENV TERRAFORM_VERSION=0.12.6
