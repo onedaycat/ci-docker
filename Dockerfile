@@ -1,12 +1,12 @@
 FROM golang:1.13.0-alpine
 
 ENV LAST_UPDATE=2019-08-19-1
-ENV TERRAFORM_VERSION=0.12.7
+ENV TERRAFORM_VERSION=0.12.9
 ENV CGO_ENABLED=0
 
 RUN apk update && apk add --no-cache \
   curl \
-  python \
+  python3 \
   py-pip \
   openssh \
   git \

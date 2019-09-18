@@ -15,9 +15,9 @@
   - mage
 - node `10.16.3`
   - yarn `1.17.3`
-- python `2.7`
-- terraform `0.12.7`
+- python `3.7.3`
+- terraform `0.12.9`
 - aws-cli
 - firebase-cli
 - git
-- ssh
+- openssh
