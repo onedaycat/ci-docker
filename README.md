@@ -10,7 +10,7 @@
 
 ## Tools
 
-- go `1.13.0`
+- go `1.13.1`
   - go-bindata
   - mage
 - node `10.16.3`
