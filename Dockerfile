@@ -37,8 +37,8 @@ RUN set -x && \
   aws --version && \
   npm install -g firebase-tools && \
   firebase --version && \
-  curl -sL https://sentry.io/get-cli/ | sh && \
-  sentry -V \
+  npm install -g @sentry/cli --unsafe-perm \
+  sentry -V && \
   curl -LO https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip && \
   unzip terraform_${TERRAFORM_VERSION}_linux_amd64.zip -d /usr/local/bin/ && \
   rm -rf terraform_${TERRAFORM_VERSION}_linux_amd64.zip && \
