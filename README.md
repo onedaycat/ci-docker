@@ -17,6 +17,7 @@
   - yarn `1.17.3`
 - python `3.7.3`
 - terraform `0.12.9`
+- sentry-cli `1.48.0`
 - aws-cli
 - firebase-cli
 - git
