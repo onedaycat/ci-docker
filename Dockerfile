@@ -12,7 +12,8 @@ RUN apk update && apk add --no-cache \
   git \
   nodejs \
   npm \
-  yarn
+  yarn \
+  bash
 
 RUN set -x && \
   ln -sf /usr/share/zoneinfo/Etc/UTC /etc/localtime && \
@@ -37,8 +38,8 @@ RUN set -x && \
   aws --version && \
   npm install -g firebase-tools && \
   firebase --version && \
-  npm install -g @sentry/cli --unsafe-perm \
-  sentry -V && \
+  curl -sL https://sentry.io/get-cli/ | bash && \
+  sentry-cli -V && \
   curl -LO https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip && \
   unzip terraform_${TERRAFORM_VERSION}_linux_amd64.zip -d /usr/local/bin/ && \
   rm -rf terraform_${TERRAFORM_VERSION}_linux_amd64.zip && \
