@@ -10,13 +10,13 @@
 
 ## Tools
 
-- go `1.13.1`
+- go `1.13.3`
   - go-bindata
   - mage
 - node `10.16.3`
   - yarn `1.17.3`
 - python `3.7.3`
-- terraform `0.12.9`
+- terraform `0.12.12`
 - sentry-cli `1.48.0`
 - aws-cli
 - firebase-cli

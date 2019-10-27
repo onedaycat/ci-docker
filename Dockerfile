@@ -1,7 +1,7 @@
-FROM golang:1.13.1-alpine
+FROM golang:1.13.3-alpine
 
 ENV LAST_UPDATE=2019-08-19-1
-ENV TERRAFORM_VERSION=0.12.9
+ENV TERRAFORM_VERSION=0.12.12
 ENV CGO_ENABLED=0
 
 RUN apk update && apk add --no-cache \
